@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cpuburner
+  namespace: customer
+spec:
+  replicas: 40
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: cpuburner
+  template:
+    metadata:
+      labels:
+        app: cpuburner
+    spec:
+      containers:
+      - image: alexeiled/stress-ng:0.11.01
+        args: ["--cpu", "0", "--cpu-method", "matrixprod", "--timeout", "240s"]
+        name: cpuburner
+        securityContext:
+          allowPrivilegeEscalation: false
+      securityContext:
+        runAsUser: 2000
